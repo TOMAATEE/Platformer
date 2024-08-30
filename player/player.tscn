@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=3 uid="uid://bam0nq5ylrvm"]
+
+[ext_resource type="Script" path="res://player/player.gd" id="1_wkrpg"]
+[ext_resource type="Texture2D" uid="uid://bqienv6ay004a" path="res://assets/tiles/Characters/tile_0000.png" id="2_nj2mo"]
+[ext_resource type="Texture2D" uid="uid://le0y5o13fg8s" path="res://assets/tiles/Characters/tile_0001.png" id="3_4eqml"]
+[ext_resource type="AudioStream" uid="uid://cdl8o0yeq32kw" path="res://player/jump.wav" id="4_i5dgs"]
+[ext_resource type="Script" path="res://player/AnimSprite.gd" id="4_mj22w"]
+[ext_resource type="Script" path="res://player/jump_sound.gd" id="5_gh7ho"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eevwg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_nj2mo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_4eqml")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0ja1r"]
+radius = 9.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qward"]
+
+[node name="Player" type="CharacterBody2D"]
+z_index = 1
+position = Vector2(432, 271)
+collision_layer = 2
+script = ExtResource("1_wkrpg")
+metadata/_edit_group_ = true
+
+[node name="AnimSprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.8, 0.8)
+sprite_frames = SubResource("SpriteFrames_eevwg")
+animation = &"run"
+script = ExtResource("4_mj22w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_0ja1r")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_left = -300
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_horizontal_offset = 0.5
+drag_bottom_margin = 0.15
+
+[node name="jump_sound" type="AudioStreamPlayer2D" parent="."]
+process_mode = 3
+stream = ExtResource("4_i5dgs")
+volume_db = -15.0
+script = ExtResource("5_gh7ho")
+
+[node name="climb_detector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 64
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="climb_detector"]
+shape = SubResource("CircleShape2D_qward")
+
+[node name="enemy_detector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="enemy_detector"]
+shape = SubResource("CircleShape2D_qward")
+
+[node name="InvincibilityTime" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="shoot" from="." to="AnimSprite" method="_on_player_shoot"]
+[connection signal="body_entered" from="climb_detector" to="." method="_on_climb_detector_body_entered"]
+[connection signal="body_exited" from="climb_detector" to="." method="_on_climb_detector_body_exited"]
+[connection signal="body_entered" from="enemy_detector" to="." method="_on_enemy_detector_body_entered"]

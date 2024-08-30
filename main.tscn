@@ -1,0 +1,97 @@
+[gd_scene load_steps=12 format=3 uid="uid://dc2or0nf5v8vp"]
+
+[ext_resource type="Script" path="res://world.gd" id="2_3dqnc"]
+[ext_resource type="PackedScene" uid="uid://bxmasfg8nlqw1" path="res://world.tscn" id="4_elai4"]
+[ext_resource type="Script" path="res://player/HealthBar.gd" id="4_m36v2"]
+[ext_resource type="PackedScene" uid="uid://bam0nq5ylrvm" path="res://player/player.tscn" id="4_nq6tq"]
+[ext_resource type="Script" path="res://player/gun.gd" id="4_seeqe"]
+[ext_resource type="AudioStream" uid="uid://c5ks6t5uku12" path="res://player/shoot.wav" id="5_7rohl"]
+[ext_resource type="PackedScene" uid="uid://j1r62xougf7m" path="res://pause_menu.tscn" id="5_sdisf"]
+[ext_resource type="Script" path="res://player/CoinCount.gd" id="6_cxglh"]
+[ext_resource type="PackedScene" uid="uid://bs3pjwa6mr6j7" path="res://background.tscn" id="7_s5l0a"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hdfgn"]
+radius = 9.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uwf2s"]
+size = Vector2(72, 54)
+
+[node name="main" type="Node2D"]
+
+[node name="world" parent="." instance=ExtResource("4_elai4")]
+script = ExtResource("2_3dqnc")
+
+[node name="BounceTimer" type="Timer" parent="world"]
+one_shot = true
+
+[node name="Player" parent="." instance=ExtResource("4_nq6tq")]
+position = Vector2(63, 170)
+collision_mask = 5
+platform_floor_layers = 4294967291
+
+[node name="interact_detector" type="Area2D" parent="Player"]
+collision_layer = 0
+collision_mask = 128
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/interact_detector"]
+shape = SubResource("CircleShape2D_hdfgn")
+
+[node name="gun" type="Marker2D" parent="Player"]
+script = ExtResource("4_seeqe")
+
+[node name="Cooldown" type="Timer" parent="Player/gun"]
+wait_time = 0.2
+one_shot = true
+
+[node name="Shoot" type="AudioStreamPlayer2D" parent="Player/gun"]
+process_mode = 3
+stream = ExtResource("5_7rohl")
+volume_db = -15.0
+
+[node name="HUDLayer" type="CanvasLayer" parent="."]
+
+[node name="HealthBar" type="HBoxContainer" parent="HUDLayer"]
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 587.0
+offset_bottom = 57.0
+scale = Vector2(0.3, 0.3)
+script = ExtResource("4_m36v2")
+
+[node name="CoinCount" type="RichTextLabel" parent="HUDLayer"]
+offset_left = 12.0
+offset_top = 30.0
+offset_right = 172.0
+offset_bottom = 55.0
+bbcode_enabled = true
+script = ExtResource("6_cxglh")
+
+[node name="pause_menu" parent="HUDLayer" instance=ExtResource("5_sdisf")]
+visible = false
+z_index = 0
+
+[node name="Background" parent="." instance=ExtResource("7_s5l0a")]
+show_behind_parent = true
+
+[node name="secret_detector" type="Area2D" parent="."]
+position = Vector2(36, -45)
+collision_layer = 4
+collision_mask = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="secret_detector"]
+position = Vector2(-144, 0)
+shape = SubResource("RectangleShape2D_uwf2s")
+
+[connection signal="belt_direction" from="world" to="Player" method="_on_world_belt_direction"]
+[connection signal="bounce" from="world" to="Player" method="_on_world_bounce"]
+[connection signal="coin_collected" from="world" to="HUDLayer/CoinCount" method="_on_world_coin_collected"]
+[connection signal="on_belt_lever" from="world" to="Player" method="_player_on_belt_lever"]
+[connection signal="timeout" from="world/BounceTimer" to="world" method="_on_bounce_timer_timeout"]
+[connection signal="shoot" from="Player" to="Player/gun" method="_on_player_shoot"]
+[connection signal="switch_lever" from="Player" to="world" method="_on_player_switch_lever"]
+[connection signal="body_shape_entered" from="Player/interact_detector" to="world" method="_on_interact_detector_body_shape_entered"]
+[connection signal="body_shape_exited" from="Player/interact_detector" to="world" method="_on_interact_detector_body_shape_exited"]
+[connection signal="shot" from="Player/gun" to="world" method="_on_gun_shot"]
+[connection signal="death" from="HUDLayer/HealthBar" to="Player" method="_on_death"]
+[connection signal="body_entered" from="secret_detector" to="world" method="_on_secret_detector_body_entered"]
+[connection signal="body_exited" from="secret_detector" to="world" method="_on_secret_detector_body_exited"]

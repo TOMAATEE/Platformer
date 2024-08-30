@@ -1,0 +1,65 @@
+[gd_scene load_steps=7 format=3 uid="uid://bs3pjwa6mr6j7"]
+
+[ext_resource type="Texture2D" uid="uid://dtcebxrsyndaw" path="res://assets/Backgrounds/06_background.png" id="1_fo5gx"]
+[ext_resource type="Texture2D" uid="uid://b4w4sla0s6lbq" path="res://assets/Backgrounds/05_distant_clouds.png" id="2_5mlik"]
+[ext_resource type="Texture2D" uid="uid://kfyk2cctuar5" path="res://assets/Backgrounds/04_clouds.png" id="3_jds63"]
+[ext_resource type="Texture2D" uid="uid://duhwq8svys07g" path="res://assets/Backgrounds/03_huge_clouds.png" id="4_mge18"]
+[ext_resource type="Texture2D" uid="uid://nqyusbq7nvoa" path="res://assets/Backgrounds/02_hill.png" id="5_ild4j"]
+[ext_resource type="Texture2D" uid="uid://bqgium6pxybu8" path="res://assets/Backgrounds/01_bushes.png" id="6_e0k48"]
+
+[node name="ParallaxBackground" type="Node2D"]
+z_index = -10
+
+[node name="Sky" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(1024, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Sky"]
+texture = ExtResource("1_fo5gx")
+centered = false
+offset = Vector2(0, -200)
+
+[node name="FarClouds" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.05, 0.05)
+repeat_size = Vector2(1024, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="FarClouds"]
+texture = ExtResource("2_5mlik")
+centered = false
+offset = Vector2(0, -200)
+
+[node name="CloseClouds" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.1, 0.1)
+repeat_size = Vector2(1024, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CloseClouds"]
+texture = ExtResource("3_jds63")
+centered = false
+offset = Vector2(0, -200)
+
+[node name="FluffyClouds" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.15, 0.15)
+repeat_size = Vector2(1024, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="FluffyClouds"]
+texture = ExtResource("4_mge18")
+centered = false
+offset = Vector2(0, -200)
+
+[node name="Hills" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.2, 0.2)
+repeat_size = Vector2(1024, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Hills"]
+texture = ExtResource("5_ild4j")
+centered = false
+offset = Vector2(0, -200)
+
+[node name="Bushes" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.3, 0.3)
+repeat_size = Vector2(1024, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Bushes"]
+texture = ExtResource("6_e0k48")
+centered = false
+offset = Vector2(0, -200)
